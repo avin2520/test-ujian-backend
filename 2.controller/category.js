@@ -1,5 +1,13 @@
 const db =require('../3.databases/mySql')
 
+const getAllData=(req,res)=>{
+    let sql = `select * from categories;`
+    db.query(sql, (err,result)=>{
+        if(err) throw err 
+        res.json(result)
+    })
+}
+
 const deleteCategoryById=(req,res)=>{
     const id = req.params.id
     // check ada child atau enggak
@@ -42,15 +50,53 @@ const deleteCategoryById=(req,res)=>{
                 message : err.message
             })
         }
-    })
-
-   
+    })   
 
     
 }
 
 
+// edit categories by id
+const EditCategoryById=(req,res)=>{
+    const data =  req.body
+    const id = req.params.id
+    let sql = `update categories set ? where id = ?;`
+    db.query(sql, [data,id], (err,result)=>{
+        if(err) throw err 
+        res.json({message : 'Edit data Success'})
+    })
+}
+
+
+// add categories 
+const addCategoryById=(req,res)=>{
+    let sql = `insert into categories set ?;`
+    const data =  req.body
+    if(data.category){
+        
+        db.query(sql, data, (err,result)=>{
+            if(err) throw err 
+            res.send('Success')
+        })
+    }else{
+        res.send('data format invalid')
+    }  
+}
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = {
-   deleteCategoryById : deleteCategoryById
+   deleteCategoryById : deleteCategoryById,
+   getAllData : getAllData,
+   EditCategoryById : EditCategoryById,
+   addCategoryById : addCategoryById
  }
